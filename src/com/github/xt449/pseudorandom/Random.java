@@ -37,7 +37,7 @@ public class Random {
 		this(Random.STATIC_SEED ^ System.nanoTime());
 	}
 
-	private int nextInternal() {
+	private long nextInternal() {
 		final long value = seed.get();
 
 		if(value < 0) {
@@ -54,26 +54,7 @@ public class Random {
 			}
 		}
 
-		return (int) (value >>> 32);
-
-//		switch((int) Math.floorMod(seed.get(), 4)) {
-//			case 0: {
-//				return (int) seed.incrementAndGet();
-//			}
-//			case 1: {
-//				return (int) seed.addAndGet(System.nanoTime());
-//			}
-//			case 2: {
-//				final long temp = ;
-//
-//				return (int) (temp >>> 32);
-//			}
-//			default: {
-//				final long temp = ;
-//
-//				return (int) (temp >>> 32);
-//			}
-//		}
+		return value;
 	}
 
 	// Unbounded generation
@@ -83,31 +64,31 @@ public class Random {
 	}
 
 	public byte nextByte() {
-		return (byte) (nextInternal() >>> 24);
+		return (byte) (nextInternal() >>> 56);
 	}
 
 	public char nextChar() {
-		return (char) ((nextInternal() >>> 16) - Short.MIN_VALUE);
+		return (char) ((nextInternal() >>> 48) - Short.MIN_VALUE);
 	}
 
 	public byte nextShort() {
-		return (byte) (nextInternal() >>> 16);
+		return (byte) (nextInternal() >>> 48);
 	}
 
 	public int nextInt() {
-		return nextInternal();
+		return (int) (nextInternal() >> 32);
 	}
 
 	public long nextLong() {
-		return (((long) nextInternal()) << 32) + nextInternal();
+		return nextInternal();
 	}
 
 	public float nextFloat() {
-		return 1F / nextInt();
+		return 1F / nextInternal();
 	}
 
 	public double nextDouble() {
-		return 1D / nextLong();
+		return 1D / nextInternal();
 	}
 
 	// Bounded generation
